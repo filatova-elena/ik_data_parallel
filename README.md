@@ -21,9 +21,11 @@ Fine tune **RsNet-152** model using Data parallel on Tiny Imagenette dataset.
 
   # Install dependencies
   pip install torch torchvision tqdm ray[tune] mlflow scikit-learn virtualenv
-```
+  ```
 - Creates **RsNet-152** model and trains it for a few epochs.
 - Logs final classification report to MLFlow. To start MLFlow, do the following:
   ```
   mlflow ui --backend-store-uri sqlite:////home/ubuntu/mlruns.db --host 0.0.0.0 --port 5000
   ```
+
+  
