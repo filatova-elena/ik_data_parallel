@@ -127,6 +127,7 @@ if __name__ == '__main__':
     model = create_model(rank)
     optimizer = optim.Adam(model.parameters(), lr = cfg.learning_rate)
     criterion = nn.CrossEntropyLoss()
+    training_start_time = time.time()   # Start timer for training
 
     with mlflow.start_run():
         
@@ -160,6 +161,7 @@ if __name__ == '__main__':
     print("==========================================\n\n")
 
     print(f"Final Accuracy: {accuracy:.4f}")  # Print the accuracy
+    print(f"Total training time: {time.strftime('%H:%M:%S', time.gmtime(time.time() - training_start_time))}")
 
     with open(cfg.report_path, "w") as f:
         f.write(report)
