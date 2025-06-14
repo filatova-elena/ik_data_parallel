@@ -19,7 +19,7 @@ memory_limit = 1.0
 
 visible_devices = [0,1,2,3]
 
-mlflow_tracking_uri = os.environ.get("MLFLOW_TRACKING_URI", "http://localhost:5000")
+mlflow_tracking_uri = os.environ.get("MLFLOW_TRACKING_URI", "http://localhost:5001")
 mlflow_experiment_name = os.environ.get("MLFLOW_EXPERIMENT", "0")
 artifact_path = 'model_artifacts'
 registered_model_name = 'imagenette2_classifier'
