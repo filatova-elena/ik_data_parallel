@@ -33,10 +33,6 @@ def train(model, train_loader, optimizer, criterion, rank, epoch):
         
         total_loss += loss.item()
 
-        # Track peak memory after each batch
-        batch_mem = torch.cuda.max_memory_allocated(rank) / 1e9  # Convert to GB
-        print(f"\nBatch memory usage {batch_mem:.2f} GB used")
-
     avg_train_loss = total_loss / len(train_loader)
     print(f"\nEpoch {epoch+1}, Train Loss: {avg_train_loss}, Memory Usage: {torch.cuda.max_memory_allocated(rank) / 1e9:.2f} GB")
     return avg_train_loss
@@ -151,28 +147,28 @@ if __name__ == '__main__':
             epoch_duration = end_time - start_time
 
             # Log metrics
-            mlflow.log_metric("train_loss", train_loss, step=epoch)
-            mlflow.log_metric("val_accuracy", accuracy, step=epoch)
+            mlflow.log_metric("train_loss", float(train_loss), step=epoch)
+            mlflow.log_metric("val_accuracy", float(accuracy), step=epoch)
             mlflow.log_metric("epoch_duration_seconds", epoch_duration, step=epoch)
 
-    # Log classification report
-    report = classification_report(all_true_labels, all_predicted_labels, target_names=train_loader.dataset.classes)
-    print("\n\nClassification Report:")
-    print(report)
-    print("==========================================\n\n")
+        # Log classification report
+        report = classification_report(all_true_labels, all_predicted_labels, target_names=train_loader.dataset.classes)
+        print("\n\nClassification Report:")
+        print(report)
+        print("==========================================\n\n")
 
-    print(f"Final Accuracy: {accuracy:.4f}")  # Print the accuracy
+        print(f"Final Accuracy: {accuracy:.4f}")  # Print the accuracy
 
-    with open(cfg.report_path, "w") as f:
-        f.write(report)
-        mlflow.log_artifact(cfg.report_path)
+        with open(cfg.report_path, "w") as f:
+            f.write(report)
+            mlflow.log_artifact(cfg.report_path)
 
-    # Log model
-    mlflow.pytorch.log_model(
-        pytorch_model=model.module if hasattr(model, 'module') else model,
-        artifact_path=cfg.artifact_path,
-        registered_model_name=cfg.registered_model_name
-    )
+        # Log model
+        mlflow.pytorch.log_model(
+            pytorch_model=model.module if hasattr(model, 'module') else model,
+            artifact_path=cfg.artifact_path,
+            registered_model_name=cfg.registered_model_name
+        )
 
-    # Log total training time and format it
-    print(f"Total training time: {time.strftime("%H:%M:%S", time.gmtime(time.time() - training_start_time))}")
+        # Log total training time and format it
+        print(f"Total training time: {time.strftime("%H:%M:%S", time.gmtime(time.time() - training_start_time))}")
